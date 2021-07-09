@@ -1,25 +1,26 @@
 import React, { useState, FormEvent } from 'react';
-import api from '../services/api';
+import apiPaises from '../../services/apiPaises';
 
 import { Title, Repositories, Form, Header } from './styles';
 
-interface Repository {
-  uf: string;
-  state: string;
+interface RepositoryPaises {
+  data:{
+  country: string;
   cases: string;
   deaths: string;
   suspects: string;
-  refuses: string;
+  recovered: string;
+  }
 }
 
-const Home: React.FC = () => {
+const paises: React.FC = () => {
   const [newRepo, setNewRepo] = useState('');
-  const [repositories, setRepositories] = useState<Repository[]>([]);
+  const [repositories, setRepositories] = useState<RepositoryPaises[]>([]);
   let uf: string;
 
   async function handleAddRepository(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
-    const response = await api.get<Repository>(`${newRepo}`);
+    const response = await apiPaises.get<RepositoryPaises>(`${newRepo}`);
     const repository = response.data;
     uf = newRepo;
 
@@ -34,24 +35,23 @@ const Home: React.FC = () => {
         <h1>Covid-19 Brasil</h1>
     </Header>
 
-      <Title>Relatorio Covid-19 Brasil</Title>
+      <Title>Relatorio Covid-19 Mundo</Title>
 
       <Form onSubmit={handleAddRepository}>
         <input value={newRepo} onChange={e => setNewRepo(e.target.value)}
-          placeholder="Insira a UF. Ex: SC" />
+          placeholder="Insira o pais. Ex: Finland" />
         <button type="submit"> Pesquisar </button>
       </Form>
       <Repositories>
         {repositories.map(repository => {
-         console.log(uf)
           return (
-          <a key={repository.state} href="https://www.google.com/search?q=relatorio+coronavirus+brasil&oq=relatorio+coronavirus+&aqs=chrome.1.69i57j0l2j0i22i30.8415j0j7&sourceid=chrome&ie=UTF-8">
+          <a key={repository.data.country} href="https://www.google.com/search?q=relatorio+coronavirus+brasil&oq=relatorio+coronavirus+&aqs=chrome.1.69i57j0l2j0i22i30.8415j0j7&sourceid=chrome&ie=UTF-8">
             <div>
-              <strong>{repository.state} - {repository.uf}</strong>
-              <p>Casos: {repository.cases}</p>
-              <p>Mortes:  {repository.deaths}</p>
-              <p>Suspeitos:  {repository.suspects}</p>
-              <p>Resultados negativos:  {repository.refuses}</p>
+              <strong>{repository.data.country} </strong>
+              <p>Casos: {repository.data.cases}</p>
+              <p>Mortes:  {repository.data.deaths}</p>
+              <p>Suspeitos:  {repository.data.suspects}</p>
+              <p>Recuperados:  {repository.data.recovered}</p>
             </div>
           </a>
           );
@@ -61,4 +61,4 @@ const Home: React.FC = () => {
   )
 };
 
-export default Home;
+export default paises;
