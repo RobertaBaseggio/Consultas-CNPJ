@@ -1,26 +1,27 @@
 import React, { useState, FormEvent } from 'react';
-import { FiChevronRight} from 'react-icons/fi';
 import api from '../services/api';
 
-import { Title, Repositories, Form } from './styles';
+import { Title, Repositories, Form, Header } from './styles';
 
 interface Repository {
-  full_name: string;
-  description: string;
-  owner: {
-    login: string;
-    avatar_url: string;
-  }
+  uf: string;
+  state: string;
+  cases: string;
+  deaths: string;
+  suspects: string;
+  refuses: string;
 }
 
 const Home: React.FC = () => {
   const [newRepo, setNewRepo] = useState('');
   const [repositories, setRepositories] = useState<Repository[]>([]);
+  let uf: string;
 
   async function handleAddRepository(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
-    const response = await api.get<Repository>(`repos/${newRepo}`);
+    const response = await api.get<Repository>(`${newRepo}`);
     const repository = response.data;
+    uf = newRepo;
 
     setRepositories([...repositories, repository]);
     setNewRepo('');
@@ -28,35 +29,33 @@ const Home: React.FC = () => {
   }
   return (
     <>
-      <Title>Explore CNPJ's</Title>
+    <Header>
+        <img src="https://image.flaticon.com/icons/png/128/2913/2913584.png" />
+        <h1>Covid-19 Brasil</h1>
+    </Header>
+
+      <Title>Relatorio Covid-19 Brasil</Title>
 
       <Form onSubmit={handleAddRepository}>
         <input value={newRepo} onChange={e => setNewRepo(e.target.value)}
-          placeholder="Insira o CNPJ" />
+          placeholder="Insira a UF. Ex: SC" />
         <button type="submit"> Pesquisar </button>
       </Form>
-
       <Repositories>
-        <div>
-        <a  href="#">
-          <div>
-            <strong>GOOGLE BRASIL INTERNET LTDA</strong>
-            <p>Portais, provedores de conteúdo e outros serviços de informação na internet</p>
-            <p>googlebrasil@google.com</p>
-            <p>SP - São Paulo - 06.990.590/0001-23</p>
-          </div>
-          <FiChevronRight size={20}/>
-        </a>
-        <a  href="#">
-          <div>
-            <strong>GOOGLE BRASIL INTERNET LTDA</strong>
-            <p>Portais, provedores de conteúdo e outros serviços de informação na internet</p>
-            <p>googlebrasil@google.com</p>
-            <p>SP - São Paulo - 06.990.590/0001-23</p>
-          </div>
-          <FiChevronRight size={20}/>
-        </a>
-        </div >
+        {repositories.map(repository => {
+         console.log(uf)
+          return (
+          <a key={repository.state} href="https://www.google.com/search?q=relatorio+coronavirus+brasil&oq=relatorio+coronavirus+&aqs=chrome.1.69i57j0l2j0i22i30.8415j0j7&sourceid=chrome&ie=UTF-8">
+            <div>
+              <strong>{repository.state} - {repository.uf}</strong>
+              <p>Casos: {repository.cases}</p>
+              <p>Mortes:  {repository.deaths}</p>
+              <p>Suspeitos:  {repository.suspects}</p>
+              <p>Resultados negativos:  {repository.refuses}</p>
+            </div>
+          </a>
+          );
+        })}
       </Repositories>
     </>
   )

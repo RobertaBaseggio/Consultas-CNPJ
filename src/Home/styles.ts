@@ -1,25 +1,52 @@
 import styled from 'styled-components';
 import { shade } from 'polished';
 
+export const Header = styled.div`
+    display:flex;
+    flex-direction:row;
+    width: 100%;
+    height: 60px;
+    background-color: #FFF;
+    border-bottom: 2px solid ${shade(0.2, '#CCF49F')};
+
+    img{
+        width: 45px;
+        height: 45px;
+        margin-left: 30px;
+        margin-top: 10px;
+    }
+
+    h1{
+        font: 20px Roboto slab;
+        font-weight: 600;
+        color: #3a3a3a;
+        max-width: 300px;
+        margin: 17px;
+    }
+
+`;
+
 export const Title = styled.h1`
     font-size: 50px;
     color: #3a3a3a;
     max-width: 450px;
     line-height: 56px;
     margin-top: 80px;
+    margin-left: 80px;
 `;
 
 export const Form = styled.form`
     margin-top: 40px;
     max-width: 700px;
     display: flex;
+    margin-left: 80px;
 
     input {
         flex: 1;
         height: 70px;
         padding: 0 24px;
-        border: 0;
-        border-radius: 5px 0 0 5px;
+        border: 1px solid ${shade(0.2, '#CCF49F')};
+        border-radius: 20px 0 0 20px;
         color: #3a3a3a;
         &::placeholder {
             color: #a8a8b3;
@@ -28,59 +55,58 @@ export const Form = styled.form`
     button {
         width: 200px;
         height: 70px;
-        background: #109BD5;
-        border-radius: 0 5px 5px 0;
-        border: 0;
-        color: #fff;
+        background: #CCF49F;
+        border-radius:0 20px 20px 0;
+        border: 1px solid ${shade(0.2, '#CCF49F')};
+        color: #000;
         font-weight: bold;
         transition: background-color 0.2s;
         &:hover {
-            background: ${shade(0.2, '#109BD5')};
+            background: ${shade(0.2, '#CCF49F')};
         }
     }
 `;
 
 export const Repositories = styled.div`
     margin-top: 80px;
-    max-width: 500px;
+    max-width: 100%;
     display: flex;
     flex-direction: row;
+    margin-left: 80px;
+    flex-wrap: wrap;
+    
 
     a {
         background: #fff;
         border-radius: 5px;
-        width: 100%;
+        width: 280px;
         padding: 24px;
-        display: block;
         text-decoration: none;
         display: flex;
         align-items: center;
         trasition: transform 0.2s;
+        margin-right: 30px;
+        margin-top: 30px;
 
         &:hover {
             transform: translate(10px);
         }
-        & + a {
-            margin-top: 16px;
-        }
 
-        img {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-        }
         div {
             margin: 0 16px;
             flex: 1;
             strong {
-                font-size: 16px;
+                font-size: 18px;
                 color: #3d3d4d;
             }
+
             p {
-                font-size: 14px;
-                color: #a8a8b3;
+                font-size: 16px;
+                color: #3d3d4d;
                 margin-top: 4px;
+                font-weight: 200;
             }
         }
     }
+
 `;

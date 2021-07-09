@@ -9,9 +9,8 @@ export default createGlobalStyle`
 }
 
 body {
-  background: #E9F5FA;
+  background: #F5F5F5;
   -webkit-font-smoothing: antialiased;
-  margin-left: 40px;
 }
 
 body, input, button {
@@ -21,7 +20,7 @@ body, input, button {
 #root {
   max-widht: 960px;
   margin: 0 auto;
-  padding: 40px 20px;
+
 }
 
 button {
