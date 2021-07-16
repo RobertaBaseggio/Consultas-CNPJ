@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import apiPaises from '../../services/apiPaises';
 
 import { Title, Repositories, Form, Header, Error } from './styles';
@@ -8,7 +8,6 @@ interface RepositoryPaises {
   country: string;
   cases: string;
   deaths: string;
-  suspects: string;
   recovered: string;
   }
 }
@@ -16,7 +15,24 @@ interface RepositoryPaises {
 const paises: React.FC = () => {
   const [newRepo, setNewRepo] = useState('');
   const [inputError, setInputError] = useState('');
-  const [repositories, setRepositories] = useState<RepositoryPaises[]>([]);
+  const [repositories, setRepositories] = useState<RepositoryPaises[]>(() => {
+    const storageRepository = localStorage.getItem(
+      '@ApiCovidMundo:repositories',
+    );
+
+      if(storageRepository){
+        return JSON.parse(storageRepository);
+      }
+      return [];
+  });
+
+useEffect(() =>{
+  localStorage.setItem(
+    '@ApiCovidMundo:repositories',
+    JSON.stringify(repositories)
+  )
+}, [repositories]);
+
 
   async function handleAddRepository(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
@@ -69,9 +85,8 @@ const paises: React.FC = () => {
             <div>
               <strong>{repository.data.country} </strong>
               <p>Casos: {repository.data.cases}</p>
-              <p>Mortes:  {repository.data.deaths}</p>
-              <p>Suspeitos:  {repository.data.suspects}</p>
-              <p>Recuperados:  {repository.data.recovered}</p>
+              <p>Mortes: {repository.data.deaths}</p>
+              <p>Recuperados: {repository.data.recovered}</p>
             </div>
           </a>
           );

@@ -1,5 +1,5 @@
 import { error } from 'console';
-import React, { useState, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import api from '../../services/api';
 
 import { Title, Repositories, Form, Header, Error } from './styles';
@@ -16,8 +16,24 @@ interface Repository {
 const Home: React.FC = () => {
   const [newRepo, setNewRepo] = useState('');
   const [inputError, setInputError] = useState('');
-  const [repositories, setRepositories] = useState<Repository[]>([]);
-  let uf: string;
+  const [repositories, setRepositories] = useState<Repository[]>(() => {
+    const storageRepository = localStorage.getItem(
+      '@ApiCovidBrasil:repositories',
+    );
+
+      if(storageRepository){
+        return JSON.parse(storageRepository);
+      }
+      return [];
+  });
+
+useEffect(() =>{
+  localStorage.setItem(
+    '@ApiCovidBrasil:repositories',
+    JSON.stringify(repositories)
+  )
+}, [repositories]);
+
 
   async function handleAddRepository(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
@@ -66,7 +82,6 @@ const Home: React.FC = () => {
 
       <Repositories>
         {repositories.map(repository => {
-         console.log(uf)
           return (
           <a key={repository.state} href={`https://www.google.com/search?q=relatorio+coronavirus+${repository.uf}&oq=relatorio+coronavirus+&aqs=chrome.1.69i57j0l2j0i22i30.8415j0j7&sourceid=chrome&ie=UTF-8`}>
             <div>
