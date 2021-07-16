@@ -1,7 +1,8 @@
+import { error } from 'console';
 import React, { useState, FormEvent } from 'react';
 import api from '../../services/api';
 
-import { Title, Repositories, Form, Header } from './styles';
+import { Title, Repositories, Form, Header, Error } from './styles';
 
 interface Repository {
   uf: string;
@@ -14,17 +15,36 @@ interface Repository {
 
 const Home: React.FC = () => {
   const [newRepo, setNewRepo] = useState('');
+  const [inputError, setInputError] = useState('');
   const [repositories, setRepositories] = useState<Repository[]>([]);
   let uf: string;
 
   async function handleAddRepository(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
-    const response = await api.get<Repository>(`${newRepo}`);
-    const repository = response.data;
-    uf = newRepo;
 
-    setRepositories([...repositories, repository]);
-    setNewRepo('');
+    if(!newRepo){
+      setInputError("Informe um usuário/repositório para pesquisar.")
+      return;
+  }
+
+   try {
+
+      const response = await api.get<Repository>(`${newRepo}`);
+      const repository = response.data;
+      console.log(repository.hasOwnProperty('error'));
+      
+      if(repository.hasOwnProperty('error')){
+        setInputError("Repósitorio não encontrado ou inexistente");
+        return;
+      }
+  
+      setRepositories([...repositories, repository]);
+      setNewRepo('');
+      setInputError('');
+  
+    } catch (err) {
+      setInputError("Repósitorio não encontrado ou inexistente");
+    }
 
   }
   return (
@@ -36,16 +56,19 @@ const Home: React.FC = () => {
 
       <Title>Relatorio Covid-19 Brasil</Title>
 
-      <Form onSubmit={handleAddRepository}>
+      <Form hasError={!!inputError} onSubmit={handleAddRepository}>
         <input value={newRepo} onChange={e => setNewRepo(e.target.value)}
           placeholder="Insira a UF. Ex: SC" />
         <button type="submit"> Pesquisar </button>
       </Form>
+
+      {inputError && <Error>{inputError}</Error>}
+
       <Repositories>
         {repositories.map(repository => {
          console.log(uf)
           return (
-          <a key={repository.state} href="https://www.google.com/search?q=relatorio+coronavirus+brasil&oq=relatorio+coronavirus+&aqs=chrome.1.69i57j0l2j0i22i30.8415j0j7&sourceid=chrome&ie=UTF-8">
+          <a key={repository.state} href={`https://www.google.com/search?q=relatorio+coronavirus+${repository.uf}&oq=relatorio+coronavirus+&aqs=chrome.1.69i57j0l2j0i22i30.8415j0j7&sourceid=chrome&ie=UTF-8`}>
             <div>
               <strong>{repository.state} - {repository.uf}</strong>
               <p>Casos: {repository.cases}</p>

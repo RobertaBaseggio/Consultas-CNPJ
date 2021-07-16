@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from 'react';
 import apiPaises from '../../services/apiPaises';
 
-import { Title, Repositories, Form, Header } from './styles';
+import { Title, Repositories, Form, Header, Error } from './styles';
 
 interface RepositoryPaises {
   data:{
@@ -15,37 +15,57 @@ interface RepositoryPaises {
 
 const paises: React.FC = () => {
   const [newRepo, setNewRepo] = useState('');
+  const [inputError, setInputError] = useState('');
   const [repositories, setRepositories] = useState<RepositoryPaises[]>([]);
-  let uf: string;
 
   async function handleAddRepository(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
-    const response = await apiPaises.get<RepositoryPaises>(`${newRepo}`);
-    const repository = response.data;
-    uf = newRepo;
 
-    setRepositories([...repositories, repository]);
-    setNewRepo('');
+    if(!newRepo){
+      setInputError("Informe um usuário/repositório para pesquisar.")
+      return;
+  }
+
+    try {
+      const response = await apiPaises.get<RepositoryPaises>(`${newRepo}`);
+      const repository = response.data;
+      console.log(repository);
+
+      if(!repository.data.hasOwnProperty("country")){
+        setInputError("Repósitorio não encontrado ou inexistente");
+        return;
+      }
+
+      setRepositories([...repositories, repository]);
+      setNewRepo('');
+      setInputError('');
+
+    } catch (err) {
+      setInputError("Repósitorio não encontrado ou inexistente");
+    }
 
   }
   return (
     <>
     <Header>
         <img src="https://image.flaticon.com/icons/png/128/2913/2913584.png" />
-        <h1>Covid-19 Brasil</h1>
+        <h1>Covid-19 Mundo</h1>
     </Header>
 
       <Title>Relatorio Covid-19 Mundo</Title>
 
-      <Form onSubmit={handleAddRepository}>
+      <Form hasError={!!inputError} onSubmit={handleAddRepository}>
         <input value={newRepo} onChange={e => setNewRepo(e.target.value)}
           placeholder="Insira o pais. Ex: Finland" />
         <button type="submit"> Pesquisar </button>
       </Form>
+
+      {inputError && <Error>{inputError}</Error>}
+      
       <Repositories>
         {repositories.map(repository => {
           return (
-          <a key={repository.data.country} href="https://www.google.com/search?q=relatorio+coronavirus+brasil&oq=relatorio+coronavirus+&aqs=chrome.1.69i57j0l2j0i22i30.8415j0j7&sourceid=chrome&ie=UTF-8">
+          <a key={repository.data.country} href={`https://www.google.com/search?q=relatorio+coronavirus+${repository.data.country}&oq=relatorio+coronavirus+&aqs=chrome.1.69i57j0l2j0i22i30.8415j0j7&sourceid=chrome&ie=UTF-8`}>
             <div>
               <strong>{repository.data.country} </strong>
               <p>Casos: {repository.data.cases}</p>
