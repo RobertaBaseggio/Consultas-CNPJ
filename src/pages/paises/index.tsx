@@ -13,6 +13,7 @@ interface RepositoryPaises {
 }
 
 const paises: React.FC = () => {
+  const [repository, setRepository] = useState<RepositoryPaises | null>(null);
   const [newRepo, setNewRepo] = useState('');
   const [inputError, setInputError] = useState('');
   const [repositories, setRepositories] = useState<RepositoryPaises[]>(() => {
@@ -25,6 +26,12 @@ const paises: React.FC = () => {
       }
       return [];
   });
+
+  useEffect(() => {
+    apiPaises.get(`${repository}`).then((response) => {
+      setRepository(response.data);
+    });
+  },[repository]);
 
 useEffect(() =>{
   localStorage.setItem(

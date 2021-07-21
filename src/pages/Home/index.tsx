@@ -4,7 +4,7 @@ import api from '../../services/api';
 
 import { Title, Repositories, Form, Header, Error } from './styles';
 
-interface Repository {
+interface Repositorio {
   uf: string;
   state: string;
   cases: string;
@@ -14,9 +14,10 @@ interface Repository {
 }
 
 const Home: React.FC = () => {
+  const [repository, setRepository] = useState<Repositorio | null>(null);
   const [newRepo, setNewRepo] = useState('');
   const [inputError, setInputError] = useState('');
-  const [repositories, setRepositories] = useState<Repository[]>(() => {
+  const [repositories, setRepositories] = useState<Repositorio[]>(() => {
     const storageRepository = localStorage.getItem(
       '@ApiCovidBrasil:repositories',
     );
@@ -27,13 +28,19 @@ const Home: React.FC = () => {
       return [];
   });
 
-useEffect(() =>{
+  useEffect(() => {
+    api.get(`${repository}`).then((response) => {
+      setRepository(response.data);
+    });
+
+
+},[repository]);
+  useEffect(() =>{
   localStorage.setItem(
     '@ApiCovidBrasil:repositories',
     JSON.stringify(repositories)
   )
-}, [repositories]);
-
+  }, [repositories]);
 
   async function handleAddRepository(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
@@ -45,7 +52,7 @@ useEffect(() =>{
 
    try {
 
-      const response = await api.get<Repository>(`${newRepo}`);
+      const response = await api.get<Repositorio>(`${newRepo}`);
       const repository = response.data;
       console.log(repository.hasOwnProperty('error'));
       
