@@ -45,7 +45,7 @@ useEffect(() =>{
     event.preventDefault();
 
     if(!newRepo){
-      setInputError("Informe um usuário/repositório para pesquisar.")
+      setInputError("Informe um país para pesquisar.")
       return;
   }
 
@@ -55,7 +55,7 @@ useEffect(() =>{
       console.log(repository);
 
       if(!repository.data.hasOwnProperty("country")){
-        setInputError("Repósitorio não encontrado ou inexistente");
+        setInputError("Lugar não encontrado ou inexistente");
         return;
       }
 
@@ -64,7 +64,7 @@ useEffect(() =>{
       setInputError('');
 
     } catch (err) {
-      setInputError("Repósitorio não encontrado ou inexistente");
+      setInputError("Lugar não encontrado ou inexistente");
     }
 
   }

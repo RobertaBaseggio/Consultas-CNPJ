@@ -46,7 +46,7 @@ const Home: React.FC = () => {
     event.preventDefault();
 
     if(!newRepo){
-      setInputError("Informe um usuário/repositório para pesquisar.")
+      setInputError("Informe uma cidade para pesquisar.")
       return;
   }
 
@@ -57,7 +57,7 @@ const Home: React.FC = () => {
       console.log(repository.hasOwnProperty('error'));
       
       if(repository.hasOwnProperty('error')){
-        setInputError("Repósitorio não encontrado ou inexistente");
+        setInputError("Lugar não encontrado ou inexistente");
         return;
       }
   
@@ -66,7 +66,7 @@ const Home: React.FC = () => {
       setInputError('');
   
     } catch (err) {
-      setInputError("Repósitorio não encontrado ou inexistente");
+      setInputError("Lugar não encontrado ou inexistente");
     }
 
   }
